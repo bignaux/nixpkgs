@@ -497,6 +497,9 @@ rec {
 
       # Hangs ODROID-XU4
       ARM_BIG_LITTLE_CPUIDLE n
+
+      DRM_NOUVEAU m
+      DRM_TEGRA_STAGING y
     '';
     gcc = {
       # Some table about fpu flags:
