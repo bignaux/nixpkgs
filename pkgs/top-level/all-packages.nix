@@ -17544,6 +17544,8 @@ with pkgs;
     libsigcxx = libsigcxx12;
   };
 
+  assaultcube = callPackage ../games/assaultcube { };
+  
   astromenace = callPackage ../games/astromenace { };
 
   atanks = callPackage ../games/atanks {};
