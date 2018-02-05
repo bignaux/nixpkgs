@@ -35,7 +35,6 @@ stdenv.mkDerivation rec {
   #makeFlags = [ "CXX=g++" ];
 
   targets = (optionalString server "server") + (optionalString client " client");
-
   buildPhase = ''
     BUNDLED_ENET=NO make -C source/src ${targets}
   '';
@@ -50,20 +49,22 @@ stdenv.mkDerivation rec {
     exec = "${name}";
   };
 
-  GAMES_DATADIR = "/share/games/${name}";
+  gamedatadir = "/share/games/${name}";
 
   installPhase = ''
-    mkdir -p $out/bin
-    mkdir -p $out/${GAMES_DATADIR}
 
-    cp -r config packages $out/${GAMES_DATADIR}
+    bindir=$out/bin
 
-    # custom script
-    substituteAll "${./launcher.sh}" "$out/bin/${name}"
-    chmod a+x "$out/bin/${name}"
+    mkdir -p $bindir $out/$gamedatadir
+
+    cp -r config packages $out/$gamedatadir
+
+    # install custom script
+    substituteAll ${./launcher.sh} $bindir/assaultcube
+    chmod +x $bindir/assaultcube
 
     if (test -e source/src/ac_client) then
-      cp source/src/ac_client $out/bin/
+      cp source/src/ac_client $bindir
       mkdir -p $out/share/applications
       cp ${desktop}/share/applications/* $out/share/applications
       install -Dpm644 packages/misc/icon.png $out/share/icons/assaultcube.png
@@ -71,8 +72,8 @@ stdenv.mkDerivation rec {
     fi
 
     if (test -e source/src/ac_server) then
-      cp source/src/ac_server $out/bin/
-      ln -s "$out/bin/${name}" "$out/bin/${name}-server"
+      cp source/src/ac_server $bindir
+      ln -s $bindir/${name} $bindir/${name}-server
     fi
     '';
 }

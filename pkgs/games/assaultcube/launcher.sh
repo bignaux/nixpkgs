@@ -1,17 +1,19 @@
-#!/bin/sh
+#!@shell@
 # original scripts are very awful
 
-CUBE_DIR=/share/games/assaultcube
+CUBE_DIR=@out@@gamedatadir@
 
-case "$0" in
+case $(basename "$0") in
   assaultcube-server)
     CUBE_OPTIONS="-Cconfig/servercmdline.txt"
-    BINARYPATH = /bin/ac_server
+    BINARYPATH=@out@/bin/ac_server
     ;;
   assaultcube)
-    CUBE_OPTIONS="--home=${HOME}/.assaultcube/v1.2next --init"
-    BINARYPATH = /bin/ac_client
+    CUBE_OPTIONS="--home=${HOME}/.assaultcube_v1.2/ --init"
+    BINARYPATH=@out@/bin/ac_client
     ;;
+  *) echo "$0" is not supported.
+     exit 1
 esac
 
 cd $CUBE_DIR
