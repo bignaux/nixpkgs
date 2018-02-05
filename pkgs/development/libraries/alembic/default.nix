@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub, unzip, cmake, openexr, hdf5 }:
+{ stdenv, fetchFromGitHub, unzip, cmake, openexr, hdf5-threadsafe }:
 
 stdenv.mkDerivation rec
 {
@@ -14,9 +14,8 @@ stdenv.mkDerivation rec
 
   outputs = [ "bin" "dev" "out" "lib" ];
 
-  buildInputs = [ unzip cmake openexr hdf5 ];
-
-  sourceRoot = "${name}-src";
+  nativeBuildInputs = [ unzip cmake ];
+  buildInputs = [ openexr hdf5-threadsafe ];
 
   enableParallelBuilding = true;
 

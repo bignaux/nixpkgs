@@ -1,11 +1,11 @@
 { stdenv, fetchurl, autoreconfHook, pkgconfig, libzen, libmediainfo, zlib }:
 
 stdenv.mkDerivation rec {
-  version = "0.7.99";
+  version = "17.12";
   name = "mediainfo-${version}";
   src = fetchurl {
     url = "https://mediaarea.net/download/source/mediainfo/${version}/mediainfo_${version}.tar.xz";
-    sha256 = "127d6wsrq3wg3ibbb28m26wrm54qbkv8h8xycanvml6ys4zqsc6a";
+    sha256 = "1pxdf0ny3c38gl513zdiaagpvk4bqnsc2fn7476yjdpv2lxsw56f";
   };
 
   nativeBuildInputs = [ autoreconfHook pkgconfig ];
@@ -14,6 +14,8 @@ stdenv.mkDerivation rec {
   sourceRoot = "./MediaInfo/Project/GNU/CLI/";
 
   configureFlags = [ "--with-libmediainfo=${libmediainfo}" ];
+
+  enableParallelBuilding = true;
 
   meta = with stdenv.lib; {
     description = "Supplies technical and tag information about a video or audio file";

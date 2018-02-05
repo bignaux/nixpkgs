@@ -13,8 +13,8 @@ let
 
   callPackage = pkgs.newScope self;
 
-  version = "3.24";
-  maintainers = with pkgs.lib.maintainers; [ lethalman ];
+  version = "3.26";
+  maintainers = with pkgs.lib.maintainers; [ lethalman jtojnar ];
 
   corePackages = with gnome3; [
     pkgs.desktop_file_utils pkgs.ibus
@@ -36,6 +36,7 @@ let
     nautilus-sendto dconf-editor vinagre gnome-weather gnome-logs
     gnome-maps gnome-characters gnome-calendar accerciser gnome-nettool
     gnome-getting-started-docs gnome-packagekit gnome-software
+    gnome-power-manager
   ];
 
   gamesPackages = with gnome3; [ swell-foop lightsoff iagno
@@ -45,7 +46,7 @@ let
     hitori gnome-taquin
   ];
 
-  inherit (pkgs) glib gtk2 webkitgtk216x gtk3 gtkmm3 libcanberra_gtk2
+  inherit (pkgs) glib gtk2 webkitgtk gtk3 gtkmm3 libcanberra_gtk2
     clutter clutter-gst clutter_gtk cogl gtkvnc;
   inherit (pkgs.gnome2) ORBit2;
   libsoup = pkgs.libsoup.override { gnomeSupport = true; };
@@ -54,9 +55,8 @@ let
   gnome3 = self // { recurseForDerivations = false; };
   gtk = gtk3;
   gtkmm = gtkmm3;
-  vala = pkgs.vala_0_32;
+  vala = pkgs.vala_0_38;
   gegl_0_3 = pkgs.gegl_0_3.override { inherit gtk; };
-  webkitgtk = webkitgtk216x;
 
 # Simplify the nixos module and gnome packages
   defaultIconTheme = adwaita-icon-theme;
@@ -75,10 +75,7 @@ let
   dconf = callPackage ./core/dconf { };
   dconf-editor = callPackage ./core/dconf-editor { };
 
-  # empathy = callPackage ./core/empathy {
-  #   webkitgtk = webkitgtk24x-gtk3;
-  #   clutter-gst = pkgs.clutter-gst;
-  # };
+  empathy = callPackage ./core/empathy { };
 
   epiphany = callPackage ./core/epiphany { };
 
@@ -238,7 +235,9 @@ let
 
   totem-pl-parser = callPackage ./core/totem-pl-parser { };
 
-  tracker = callPackage ./core/tracker { giflib = pkgs.giflib_5_0; };
+  tracker = callPackage ./core/tracker { };
+
+  tracker-miners = callPackage ./core/tracker-miners { };
 
   vte = callPackage ./core/vte { };
 
@@ -298,6 +297,8 @@ let
   gnome-photos = callPackage ./apps/gnome-photos {
     gegl = gegl_0_3;
   };
+
+  gnome-power-manager = callPackage ./apps/gnome-power-manager { };
 
   gnome-weather = callPackage ./apps/gnome-weather { };
 

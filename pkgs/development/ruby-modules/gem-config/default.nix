@@ -22,7 +22,7 @@
 , pkgconfig , ncurses, xapian_1_2_22, gpgme, utillinux, fetchpatch, tzdata, icu, libffi
 , cmake, libssh2, openssl, mysql, darwin, git, perl, pcre, gecode_3, curl
 , libmsgpack, qt48, libsodium, snappy, libossp_uuid, lxc, libpcap, xlibs, gtk2, buildRubyGem
-, re2
+, cairo, re2, rake, gobjectIntrospection, gdk_pixbuf
 }@args:
 
 let
@@ -31,8 +31,7 @@ let
   rainbow_rake = buildRubyGem {
     name = "rake";
     gemName = "rake";
-    remotes = ["https://rubygems.org"];
-    sha256 = "01j8fc9bqjnrsxbppncai05h43315vmz9fwg28qdsgcjw9ck1d7n";
+    source.sha256 = "01j8fc9bqjnrsxbppncai05h43315vmz9fwg28qdsgcjw9ck1d7n";
     type = "gem";
     version = "12.0.0";
   };
@@ -41,7 +40,7 @@ in
 {
   atk = attrs: {
     nativeBuildInputs = [ pkgconfig ];
-    buildInputs = [ gtk2 pcre ];
+    buildInputs = [ gtk2 pcre rake ];
   };
 
   bundler = attrs:
@@ -64,6 +63,11 @@ in
     buildInputs = [ gtk2 pcre xlibs.libpthreadstubs xlibs.libXdmcp];
   };
 
+  cairo-gobject = attrs: {
+    nativeBuildInputs = [ pkgconfig ];
+    buildInputs = [ cairo pcre xlibs.libpthreadstubs xlibs.libXdmcp ];
+  };
+
   capybara-webkit = attrs: {
     buildInputs = [ qt48 ];
   };
@@ -71,7 +75,7 @@ in
   charlock_holmes = attrs: {
     buildInputs = [ which icu zlib ];
   };
-  
+
   curb = attrs: {
     buildInputs = [ curl ];
   };
@@ -93,13 +97,18 @@ in
     buildInputs = [ libffi ];
   };
 
+  gdk_pixbuf2 = attrs: {
+    nativeBuildInputs = [ pkgconfig ];
+    buildInputs = [ rake gdk_pixbuf ];
+  };
+
   gpgme = attrs: {
     buildInputs = [ gpgme ];
   };
 
   gio2 = attrs: {
     nativeBuildInputs = [ pkgconfig ];
-    buildInputs = [ gtk2 pcre ];
+    buildInputs = [ gtk2 pcre gobjectIntrospection ];
   };
 
   gitlab-markup = attrs: { meta.priority = 1; };
@@ -116,8 +125,10 @@ in
     CFLAGS = "-I${gtk2.dev}/include/gtk-2.0 -I/non-existent-path";
   };
 
-  nativeBuildInputs = [ pkgconfig ];
-  gobject-introspection = attrs: { buildInputs = [ gtk2 pcre ]; };
+  gobject-introspection = attrs: {
+    nativeBuildInputs = [ pkgconfig ];
+    buildInputs = [ gobjectIntrospection gtk2 pcre ];
+  };
 
   grpc = attrs: {
   nativeBuildInputs = [ pkgconfig ];
@@ -155,11 +166,11 @@ in
   };
 
   mysql = attrs: {
-    buildInputs = [ mysql.lib zlib openssl ];
+    buildInputs = [ mysql.connector-c zlib openssl ];
   };
 
   mysql2 = attrs: {
-    buildInputs = [ mysql.lib zlib openssl ];
+    buildInputs = [ mysql.connector-c zlib openssl ];
   };
 
   ncursesw = attrs: {

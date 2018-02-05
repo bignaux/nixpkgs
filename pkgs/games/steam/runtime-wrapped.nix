@@ -5,7 +5,7 @@
 
 assert !(nativeOnly && runtimeOnly);
 
-let 
+let
   runtimePkgs = with pkgs; [
     # Required
     glib
@@ -26,7 +26,7 @@ let
     xlibs.libICE
     gnome2.GConf
     freetype
-    curl
+    (curl.override { gnutlsSupport = true; sslSupport = false; })
     nspr
     nss
     fontconfig
@@ -57,6 +57,7 @@ let
     glew110
     openssl
     libidn
+    tbb
 
     # Other things from runtime
     xlibs.libXinerama
@@ -87,6 +88,8 @@ let
     libva
     vulkan-loader
     gcc.cc
+    nss
+    nspr
   ];
 
   ourRuntime = if runtimeOnly then []

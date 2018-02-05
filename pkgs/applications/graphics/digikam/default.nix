@@ -1,4 +1,4 @@
-{ mkDerivation, lib, fetchurl, cmake, extra-cmake-modules, wrapGAppsHook
+{ mkDerivation, lib, fetchFromGitHub, cmake, doxygen, extra-cmake-modules, wrapGAppsHook, fetchpatch
 
 # For `digitaglinktree`
 , perl, sqlite
@@ -33,8 +33,8 @@
 , liblqr1
 , libqtav
 , libusb1
-, mesa
 , marble
+, mesa
 , mysql
 , opencv3
 , pcre
@@ -50,14 +50,16 @@
 
 mkDerivation rec {
   name    = "digikam-${version}";
-  version = "5.7.0";
+  version = "5.8.0";
 
-  src = fetchurl {
-    url = "http://download.kde.org/stable/digikam/${name}.tar.xz";
-    sha256 = "1xah079g47fih8l9qy1ifppfvmq5yms5y1z54nvxdyz8nsszy19n";
+  src = fetchFromGitHub {
+    owner  = "KDE";
+    repo   = "digikam";
+    rev    = "v${version}";
+    sha256 = "1bvidg0fn92xvw5brhb34lm7m4iy4jb5xpvnhbgh8vik2m4n41w1";
   };
 
-  nativeBuildInputs = [ cmake extra-cmake-modules kdoctools wrapGAppsHook ];
+  nativeBuildInputs = [ cmake doxygen extra-cmake-modules kdoctools wrapGAppsHook ];
 
   buildInputs = [
     bison
@@ -75,7 +77,6 @@ mkDerivation rec {
     libqtav
     libusb1
     mesa
-    mysql
     opencv3
     pcre
 
@@ -98,8 +99,6 @@ mkDerivation rec {
     oxygen
     threadweaver
   ];
-
-  enableParallelBuilding = true;
 
   cmakeFlags = [
     "-DENABLE_MYSQLSUPPORT=1"

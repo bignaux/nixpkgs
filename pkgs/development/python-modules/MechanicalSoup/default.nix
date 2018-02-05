@@ -1,18 +1,30 @@
 { fetchPypi, buildPythonPackage, lib
-, requests, beautifulsoup4, six }:
+, requests, beautifulsoup4, six, lxml
+, pytestrunner, requests-mock, pytestcov, pytest
+}:
 
 
 buildPythonPackage rec {
   name = "${pname}-${version}";
   pname = "MechanicalSoup";
-  version = "0.7.0";
+  version = "0.9.0.post4";
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "0wh93rml446ipx603n5z5i5bpan46pzliq6sw76d0ms9w7w2658d";
+    sha256 = "ce8f822afbc9bef1499be417e8d5deecd0cd32606420165700e89477955f03ab";
   };
 
-  propagatedBuildInputs = [ requests beautifulsoup4 six ];
+  checkInputs = [ pytest pytestrunner requests-mock pytestcov ];
+
+  propagatedBuildInputs = [ lxml requests beautifulsoup4 six ];
+
+  # Requires network
+  doCheck = false;
+
+  postPatch = ''
+    # Is in setup_requires but not used in setup.py...
+    substituteInPlace setup.py --replace "'pytest-runner'" ""
+  '';
 
   meta = with lib; {
     description = "A Python library for automating interaction with websites";

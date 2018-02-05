@@ -12,11 +12,11 @@ in
 with stdenv.lib;
 stdenv.mkDerivation rec {
   name = "lxc-${version}";
-  version = "2.1.0";
+  version = "2.1.1";
 
   src = fetchurl {
     url = "https://linuxcontainers.org/downloads/lxc/lxc-${version}.tar.gz";
-    sha256 = "1qld0gi19mximxm0qyr6vzav32gymhc7fvp0bzwv37j0b8q0fi1r";
+    sha256 = "1xpghrinxhm2072fwmn42pxhjwh7qx6cbsipw4s6g38a8mkklrk8";
   };
 
   nativeBuildInputs = [

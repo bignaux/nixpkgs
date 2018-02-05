@@ -1,19 +1,11 @@
-{ stdenv, fetchurl, openssl, python2, zlib, libuv, v8, utillinux, http-parser
-, pkgconfig, runCommand, which, libtool, fetchpatch
-, callPackage
-, darwin ? null
-, enableNpm ? true
-}@args:
+{ stdenv, callPackage, lib, enableNpm ? true }:
 
 let
-  nodejs = import ./nodejs.nix args;
-  baseName = if enableNpm then "nodejs" else "nodejs-slim";
+  buildNodejs = callPackage ./nodejs.nix {};
 in
-  stdenv.mkDerivation (nodejs // rec {
-    version = "6.11.4";
-    name = "${baseName}-${version}";
-    src = fetchurl {
-      url = "https://nodejs.org/download/release/v${version}/node-v${version}.tar.xz";
-      sha256 = "0l6lmid8wfvvbq391x0k19crs63zf6kkcln79fn3d088wcsh8bsc";
-    };
-  })
+  buildNodejs {
+    inherit enableNpm;
+    version = "6.12.2";
+    sha256 = "1z6sn4b973sxw0h9hd38rjq6cqdkzl5gsd48f793abvarwgpqrrk";
+    patches = lib.optionals stdenv.isDarwin [ ./no-xcode.patch ];
+  }
