@@ -10,7 +10,7 @@ let
     + name
     + optionalString (val != null && cond != false) "=${val}";
   mkEnable = mkFlag "enable-" "disable-";
-  mkWith = mkFlag "with-" "without-";
+  mkWith = mkFlag "with-" "--without-";
   mkOther = mkFlag "" "" true;
 
   shouldUsePkg = pkg: if pkg != null && any (x: x == stdenv.system) pkg.meta.platforms then pkg else null;
@@ -44,13 +44,16 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [ automake autoconf libtool pkgconfig];
   buildInputs = [ optLz4 optLzma optZlib optLzo optZstd fuse ];
 
-  /* configureFlags = [
-    (mkWith (optLz4  != null) "lz4"  null)
-    (mkWith (optLzma != null) "xz" null)
-    (mkWith (optZlib != null) "zlib" null)
-    (mkWith (optLzo  != null) "lzo"  null)
-		(mkWith (optZstd != null) "zstd"  null)
-  ]; */
+	# We can do it far better i guess, ignoring -with option
+	# but it should be safer like that.
+	# TODO: Improve writing nix expression mkWithLib.
+  configureFlags = [
+    (mkWith (optLz4  != null) "lz4=${lz4}/lib"  null)
+    (mkWith (optLzma != null) "xz=${xz}/lib" null)
+    (mkWith (optZlib != null) "zlib=${zlib}/lib" null)
+    (mkWith (optLzo  != null) "lzo=${lzo}/lib"  null)
+		(mkWith (optZstd != null) "zstd=${zstd}/lib"  null)
+  ];
 
   preConfigure = ''
     ./autogen.sh
