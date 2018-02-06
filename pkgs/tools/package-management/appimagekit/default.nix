@@ -31,10 +31,6 @@ stdenv.mkDerivation rec {
     sha256 = "0s1macf2xhaph3h6hsxj1dc9lgcgm858hsc2jqbsfb5d6wl51n3a";
   }; */
 
-  # ${branch} not accepted as a value ?
-  # TODO: write a functional BUNDLED_ENET option and restore it in deps.
-  /* patches = [ ./appimagekit-next.patch ]; */
-
   /* #3382: "unable to get local issuer certificate" problem)  */
   GIT_SSL_CAINFO = /etc/ssl/certs/ca-certificates.crt;
 
@@ -49,6 +45,7 @@ stdenv.mkDerivation rec {
     "-DUSE_SYSTEM_INOTIFY_TOOLS=1"
     "-DUSE_SYSTEM_LIBARCHIVE=1"
     "-DUSE_SYSTEM_GTEST=1"
+    "--trace"
   ];
 
   # add optional for server only ?
