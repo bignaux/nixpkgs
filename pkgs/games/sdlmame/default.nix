@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, makeWrapper, pkgconfig, python3, alsaLib, qt5, lua,
+{ stdenv, fetchurl, makeWrapper, pkgconfig, python3, alsaLib, qt5, qt5.full, lua,
   SDL2, fontconfig, freetype, SDL2_ttf, sqlite, libjpeg, expat, flac, openmpi,
   portaudio, portmidi, zlib, xorg }:
 
@@ -58,9 +58,9 @@ stdenv.mkDerivation rec {
       3rdparty/genie/build/gmake.linux/genie.make
     ''; */
 
-  nativeBuildInputs = [makeWrapper python3 pkgconfig];
-  buildInputs = [ alsaLib lua SDL2 fontconfig freetype SDL2_ttf qt5.qtbase];
-    #libjpeg expat flac openmpi portaudio portmidi zlib xorg ];
+  nativeBuildInputs = [makeWrapper python3 pkgconfig  qt56.full];
+  buildInputs = [ alsaLib lua qt5.qtbase SDL2 fontconfig freetype SDL2_ttf
+      libjpeg expat flac openmpi portaudio portmidi zlib ];
 
   makeFlags =
   let

@@ -1,4 +1,4 @@
-{ fetchurl, stdenv, makeWrapper }:
+{ fetchurl, stdenv, makeWrapper, unzip, libxml2 }:
 
 with stdenv.lib;
 
@@ -9,8 +9,8 @@ stdenv.mkDerivation rec {
   name = "${pname}-${version}";
 
   src = fetchurl {
-      url    = "mirror://sourceforge/projects/z88dk/files/z88dk/1.99B/z88dk-src-${version}.zip";
-      sha256 = "5042db522fe48fd7f9f11a73168e23f37debe327d3da219d7792b8b3cbee4d72";
+      url    = "https://netcologne.dl.sourceforge.net/project/z88dk/z88dk/1.99B/z88dk-src-${version}.zip";
+      sha256 = "05kd10wdk4s4bpx55p5f1757cf74aj8m3q6xild692inw9m5v54b";
     };
 
   meta = with stdenv.lib; {
@@ -20,6 +20,6 @@ stdenv.mkDerivation rec {
     maintainers = [ maintainers.genesis ];
   };
 
-  #nativeBuildInputs = [ pkgconfig ];
-  buildInputs = [ makeWrapper ];
+  nativeBuildInputs = [ unzip ];
+  buildInputs = [ makeWrapper libxml2 ];
 }
