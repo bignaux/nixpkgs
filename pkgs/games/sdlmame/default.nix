@@ -23,43 +23,72 @@ stdenv.mkDerivation rec {
 
   # Function to disable a makefile option
   #disable_feature = '' sed -i -e "/^[ 	]*$1.*=/s:^:# :" makefile '';
-  disable_feature = feature: ('' sed -i -e "/^[ 	]*$${feature}.*=/s:^:# :" makefile '');
+  #disable_feature = feature: (''sed -i -e "/^[ 	]*${feature}.*=/s:^:# :" makefile'');
 
   # Function to enable a makefile option
   #enable_feature = '' sed -i -e "/^#.*$1.*=/s:^#[ 	]*::"  makefile '';
-  enable_feature = feature: (''sed -i -e "/^#.*${feature}.*=/s:^#[  ]*::"  makefile'');
+  /* enable_feature = feature: (''sed -i -e "/^#.*${feature}.*=/s:^#[  ]*::"  makefile''); */
 
-  configurePhase = ''
+#    /* bgfx needs X ${disable_feature "NO_X11"}*/
+  /* configurePhase = ''
     set +x
   	# Disable using bundled libraries
-  	$enable_feature USE_SYSTEM_LIB_EXPAT
-  	"$enable_feature" USE_SYSTEM_LIB_FLAC
-  	"$enable_feature" USE_SYSTEM_LIB_JPEG
-    # Use bundled lua for now to ensure correct compilation (ref. b.g.o #407091)
-    "$enable_feature" USE_SYSTEM_LIB_LUA
-  	"$enable_feature" USE_SYSTEM_LIB_PORTAUDIO
-  	"$enable_feature" USE_SYSTEM_LIB_SQLITE3
-  	"$enable_feature" USE_SYSTEM_LIB_ZLIB
+  	"USE_SYSTEM_LIB_EXPAT"}
+  	"USE_SYSTEM_LIB_FLAC"}
+  	"USE_SYSTEM_LIB_JPEG"}
+    "USE_SYSTEM_LIB_LUA"}
+  	"USE_SYSTEM_LIB_PORTAUDIO"}
+  	"USE_SYSTEM_LIB_SQLITE3"}
+  	"USE_SYSTEM_LIB_ZLIB"}
 
   	# Disable warnings being treated as errors and enable verbose build output
-  	"$enable_feature" NOWERROR
-  	"$enable_feature" VERBOSE
+  	"NOWERROR"}
+  	"VERBOSE"}
 
-    #if amd64  "$enable_feature" PTR64
-    "$enable_feature" DEBUG # ? use debug &&
-    "$enable_feature" TOOLS # ? use tools &&
-    "$disable_feature" NO_X11 # bgfx needs X
-    "$enable_feature" OPENMP # ? use openmp &&
-    "$enable_feature" USE_SYSTEM_LIB_PORTMIDI
+    "PTR64"} # #if amd64
+    "DEBUG"} # ? use debug &&
+    "TOOLS"} # ? use tools &&
+
+    "OPENMP"} # ? use openmp &&
+    "USE_SYSTEM_LIB_PORTMIDI"}
 
     sed -i \
       -e 's/-Os//' \
       -e '/^\(CC\|CXX\|AR\) /s/=/?=/' \
       3rdparty/genie/build/gmake.linux/genie.make
-    '';
+    ''; */
 
-  makeFlags = [ "REGENIE=1" ];
-  nativeBuildInputs = [makeWrapper  python3 pkgconfig];
-  BuildInputs = [ alsaLib qt5 lua SDL2 fontconfig freetype SDL2_ttf sqlite
-    libjpeg expat flac openmpi portaudio portmidi zlib xorg ];
+  nativeBuildInputs = [makeWrapper python3 pkgconfig];
+  buildInputs = [ alsaLib lua SDL2 fontconfig freetype SDL2_ttf qt5.qtbase];
+    #libjpeg expat flac openmpi portaudio portmidi zlib xorg ];
+
+  makeFlags =
+  let
+    arch = head (splitString "-" stdenv.system);
+  in [
+    /* "ARCHITECTURE=${arch}"
+    "TARGETOS=linux" */
+    "PTR64=1" # #if amd64
+
+    # Disable using bundled libraries
+  	"USE_SYSTEM_LIB_EXPAT=1"
+  	"USE_SYSTEM_LIB_FLAC=1"
+  	"USE_SYSTEM_LIB_JPEG=1"
+    "USE_SYSTEM_LIB_LUA=1"
+  	"USE_SYSTEM_LIB_PORTAUDIO=1"
+  	"USE_SYSTEM_LIB_SQLITE3=1"
+  	"USE_SYSTEM_LIB_ZLIB=1"
+
+  	# Disable warnings being treated as errors and enable verbose build output
+  	"NOWERROR=1"
+  	"VERBOSE=1"
+
+    "DEBUG=1" # ? use debug &&
+    "TOOLS=1" # ? use tools &&
+    "OPENMP=1" # ? use openmp &&
+    "USE_SYSTEM_LIB_PORTMIDI=1"
+
+    "REGENIE=1"
+  ];
+
 }
