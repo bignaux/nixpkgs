@@ -1,26 +1,7 @@
-{ stdenv, fetchurl, automake, autoconf, libtool, fuse, pkgconfig, pcre,
-
-# Optional Dependencies
-lz4 ? null, xz ? null, zlib ? null, lzo ? null, zstd ? null}:
+{ stdenv, fetchFromGitHub, automake, autoreconfHook, libtool, fuse, pkgconfig,
+  pcre, lz4, xz, zlib, lzo, zstd }:
 
 with stdenv.lib;
-let
-  mkFlag = trueStr: falseStr: cond: name: val: "--"
-    + (if cond then trueStr else falseStr)
-    + name
-    + optionalString (val != null && cond != false) "=${val}";
-  mkEnable = mkFlag "enable-" "disable-";
-  mkWith = mkFlag "with-" "--without-";
-  mkOther = mkFlag "" "" true;
-
-  shouldUsePkg = pkg: if pkg != null && any (x: x == stdenv.system) pkg.meta.platforms then pkg else null;
-
-  optLz4 = shouldUsePkg lz4;
-  optLzma = shouldUsePkg xz;
-  optZlib = shouldUsePkg zlib;
-  optLzo = shouldUsePkg lzo;
-	optZstd = shouldUsePkg zstd;
-in
 
 stdenv.mkDerivation rec {
 
@@ -38,28 +19,22 @@ stdenv.mkDerivation rec {
 
   # platforms.darwin should be supported : see PLATFORMS file in src.
   # we could use a nix fuseProvider, and let the derivation choose the OS
-  # specific implementation. 
+  # specific implementation.
 
-	src = fetchurl {
+  src = fetchFromGitHub {
+    owner = "vasi";
+    repo  = "squashfuse";
+    rev = "371e4bee9caa254d842913df9bdbcc795c5b342c";
+    sha256 = "0i9p8r1c128hzy0cwmga1x7q8zk7kw68mh8li5ipfz8zba60d7vz";
+  };
+
+	/* src = fetchurl {
 	    url = "https://github.com/vasi/squashfuse/archive/${version}.tar.gz";
 	    sha256 = "08d1j1a73dhhypbk0q20qkrz564zpmvkpk3k3s8xw8gd9nvy2xa2";
-	  };
+	  }; */
 
-  nativeBuildInputs = [ automake autoconf libtool pkgconfig];
-  buildInputs = [ optLz4 optLzma optZlib optLzo optZstd fuse ];
+  patches = [ ./0003-introduice-to-squashfuse.pc.in.patch ];
 
-	# We can do it far better i guess, ignoring -with option
-	# but it should be safer like that.
-	# TODO: Improve writing nix expression mkWithLib.
-  configureFlags = [
-    (mkWith (optLz4  != null) "lz4=${lz4}/lib"  null)
-    (mkWith (optLzma != null) "xz=${xz}/lib" null)
-    (mkWith (optZlib != null) "zlib=${zlib}/lib" null)
-    (mkWith (optLzo  != null) "lzo=${lzo}/lib"  null)
-		(mkWith (optZstd != null) "zstd=${zstd}/lib"  null)
-  ];
-
-  preConfigure = ''
-    ./autogen.sh
-  '';
+  nativeBuildInputs = [ autoreconfHook libtool pkgconfig];
+  buildInputs = [ lz4 xz zlib lzo zstd fuse ];
 }

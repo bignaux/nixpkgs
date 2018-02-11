@@ -2,6 +2,7 @@
   pkgconfig, pcre, zlib, lzma, libpthreadstubs, glibc, which,
   squashfuse, squashfsTools, gtest, glib, libarchive, autoconf, automake, libtool, wget, xz, git}:
 
+# squashfsTools squashfs-tool
 with stdenv.lib;
 
 stdenv.mkDerivation rec {

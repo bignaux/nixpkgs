@@ -14007,6 +14007,8 @@ with pkgs;
 
   qgo = libsForQt5.callPackage ../games/qgo { };
 
+  qmc2 = libsForQt5.callPackage ../games/qmc2 { };
+
   quattrocento = callPackage ../data/fonts/quattrocento {};
 
   quattrocento-sans = callPackage ../data/fonts/quattrocento-sans {};

@@ -1,0 +1,70 @@
+From 0c44cb2abe402d6e352dd47ac8b7e7495c7c2a6f Mon Sep 17 00:00:00 2001
+From: Bignaux Ronan <ronan@aimao.org>
+Date: Thu, 8 Feb 2018 17:16:11 +0100
+Subject: [PATCH 3/3] introduice to squashfuse.pc.in
+
+---
+ Makefile.am      |  3 +++
+ configure.ac     |  5 ++++-
+ squashfuse.pc.in | 12 ++++++++++++
+ 3 files changed, 19 insertions(+), 1 deletion(-)
+ create mode 100644 squashfuse.pc.in
+
+diff --git a/Makefile.am b/Makefile.am
+index d191074..1507525 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -16,6 +16,9 @@ noinst_PROGRAMS =
+ lib_LTLIBRARIES = libsquashfuse.la libfuseprivate.la
+ include_HEADERS = squashfuse.h squashfs_fs.h
+ 
++pkgconfigdir = @pkgconfigdir@
++pkgconfig_DATA 	= squashfuse.pc
++
+ # Main library: libsquashfuse
+ libsquashfuse_la_SOURCES = swap.c cache.c table.c dir.c file.c fs.c \
+ 	decompress.c xattr.c hash.c stack.c traverse.c util.c \
+diff --git a/configure.ac b/configure.ac
+index cbd10f8..934097b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -8,6 +8,9 @@ AM_SILENT_RULES(yes)
+ AM_PROG_AR
+ LT_INIT
+ 
++PKG_PROG_PKG_CONFIG
++PKG_INSTALLDIR
++
+ # Compiler
+ AC_PROG_AWK
+ AC_PROG_SED
+@@ -62,7 +65,7 @@ AS_IF([test "x$enable_high_level$enable_low_level$enable_demo" = xnonono],
+ 	AC_MSG_FAILURE([Nothing left to build]))
+ 
+ 
+-AC_CONFIG_FILES([Makefile])
++AC_CONFIG_FILES([Makefile squashfuse.pc])
+ AC_OUTPUT
+ 
+ AS_ECHO()
+diff --git a/squashfuse.pc.in b/squashfuse.pc.in
+new file mode 100644
+index 0000000..f131107
+--- /dev/null
++++ b/squashfuse.pc.in
+@@ -0,0 +1,12 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: squashfuse
++Description: squashfuse library to mount squashfs archives
++Version: @VERSION@
++
++Requires:
++Libs: -L${libdir} -lsquashfuse
++Cflags: -I${includedir}
+-- 
+2.15.1
+

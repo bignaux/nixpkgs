@@ -1,44 +1,65 @@
-{ stdenv, fetchurl, alsaLib, qt48, SDL, fontconfig, freetype, SDL_ttf, xorg }:
+{ stdenv, fetchurl, makeWrapper, pkgconfig, python3, alsaLib, qt5, lua,
+  SDL2, fontconfig, freetype, SDL2_ttf, sqlite, libjpeg, expat, flac, openmpi,
+  portaudio, portmidi, zlib, xorg }:
 
-assert stdenv.system == "x86_64-linux" || stdenv.system == "i686-linux";
+with stdenv.lib;
 
 stdenv.mkDerivation rec {
-  version = "0.151.u0-1";
+  version = "0.194";
   name    = "sdlmame-${version}";
+  mamename = "mame" + replaceStrings ["."] [""] (version);
 
-  src = if stdenv.system == "x86_64-linux"
-    then fetchurl {
-      url    = "http://seblu.net/a/archive/packages/s/sdlmame/${name}-x86_64.pkg.tar.xz";
-      sha256 = "1j9vjxhrhsskrlk5wr7al4wk2hh3983kcva42mqal09bmc8qg3m9";
-    }
-    else fetchurl {
-      url    = "http://seblu.net/a/archive/packages/s/sdlmame/${name}-i686.pkg.tar.xz";
-      sha256 = "1i38j9ml66pyxzm0zzf1fv4lb40f6w47cdgaw846q91pzakkkqn7";
+  src = fetchurl {
+      url    = "https://github.com/mamedev/mame/archive/${mamename}.tar.gz";
+      sha256 = "07bn7q919hrmqblzi0awmy3f0867pvhgcwscl4r14rqd5nvzmbqz";
     };
 
-  buildPhase = ''
-    sed -i "s|/usr|$out|" bin/sdlmame
-  '';
-
-  installPhase = ''
-    patchelf \
-      --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-      --set-rpath "${stdenv.lib.makeLibraryPath [ alsaLib qt48 SDL fontconfig freetype SDL_ttf xorg.libX11 xorg.libXinerama stdenv.cc.cc ]}" \
-      share/sdlmame/sdlmame
-
-    mkdir -p "$out/bin"
-    cp -r bin/sdlmame "$out/bin"
-    cp -r share "$out"
-  '';
-
-  dontPatchELF = true;
-  dontStrip    = true;
-
   meta = with stdenv.lib; {
-    homepage    = http://sdlmame.lngn.net;
-    description = "A port of the popular Multiple Arcade Machine Emulator using SDL with OpenGL support";
+    homepage    = http://mamedev.org/;
+    description = "Multiple Arcade Machine Emulator + Multi Emulator Super System (MESS)";
     license     = "MAME";
-    maintainers = with maintainers; [ lovek323 ];
-    platforms   = platforms.linux;
+    maintainers = [ maintainers.genesis ];
   };
+
+  # Function to disable a makefile option
+  #disable_feature = '' sed -i -e "/^[ 	]*$1.*=/s:^:# :" makefile '';
+  disable_feature = feature: ('' sed -i -e "/^[ 	]*$${feature}.*=/s:^:# :" makefile '');
+
+  # Function to enable a makefile option
+  #enable_feature = '' sed -i -e "/^#.*$1.*=/s:^#[ 	]*::"  makefile '';
+  enable_feature = feature: (''sed -i -e "/^#.*${feature}.*=/s:^#[  ]*::"  makefile'');
+
+  configurePhase = ''
+    set +x
+  	# Disable using bundled libraries
+  	$enable_feature USE_SYSTEM_LIB_EXPAT
+  	"$enable_feature" USE_SYSTEM_LIB_FLAC
+  	"$enable_feature" USE_SYSTEM_LIB_JPEG
+    # Use bundled lua for now to ensure correct compilation (ref. b.g.o #407091)
+    "$enable_feature" USE_SYSTEM_LIB_LUA
+  	"$enable_feature" USE_SYSTEM_LIB_PORTAUDIO
+  	"$enable_feature" USE_SYSTEM_LIB_SQLITE3
+  	"$enable_feature" USE_SYSTEM_LIB_ZLIB
+
+  	# Disable warnings being treated as errors and enable verbose build output
+  	"$enable_feature" NOWERROR
+  	"$enable_feature" VERBOSE
+
+    #if amd64  "$enable_feature" PTR64
+    "$enable_feature" DEBUG # ? use debug &&
+    "$enable_feature" TOOLS # ? use tools &&
+    "$disable_feature" NO_X11 # bgfx needs X
+    "$enable_feature" OPENMP # ? use openmp &&
+    "$enable_feature" USE_SYSTEM_LIB_PORTMIDI
+
+    sed -i \
+      -e 's/-Os//' \
+      -e '/^\(CC\|CXX\|AR\) /s/=/?=/' \
+      3rdparty/genie/build/gmake.linux/genie.make
+    '';
+
+  makeFlags = [ "REGENIE=1" ];
+  nativeBuildInputs = [makeWrapper  python3 pkgconfig];
+  BuildInputs = [ alsaLib qt5 lua SDL2 fontconfig freetype SDL2_ttf sqlite
+    libjpeg expat flac openmpi portaudio portmidi zlib xorg ];
 }
