@@ -1,6 +1,6 @@
 { stdenv, fetchurl, makeWrapper, pkgconfig, python3, alsaLib, qt5, lua,
   SDL2, fontconfig, freetype, SDL2_ttf, sqlite, libjpeg, expat, flac, openmpi,
-  portaudio, portmidi, zlib, xorg }:
+  portaudio, portmidi, zlib, mesa, xorg }:
 
 with stdenv.lib;
 
@@ -59,8 +59,8 @@ stdenv.mkDerivation rec {
     ''; */
 
   nativeBuildInputs = [makeWrapper python3 pkgconfig ];
-  buildInputs = [ alsaLib lua qt5.qtbase SDL2 fontconfig freetype SDL2_ttf
-      libjpeg expat flac openmpi portaudio portmidi zlib ];
+  buildInputs = [ alsaLib lua qt5.full SDL2 fontconfig freetype SDL2_ttf
+      libjpeg expat flac openmpi portaudio portmidi zlib mesa ];
 
   makeFlags =
       let
@@ -74,10 +74,11 @@ stdenv.mkDerivation rec {
       	"USE_SYSTEM_LIB_EXPAT=1"
       	"USE_SYSTEM_LIB_FLAC=1"
       	"USE_SYSTEM_LIB_JPEG=1"
-        "USE_SYSTEM_LIB_LUA=1"
+        "USE_SYSTEM_LIB_LUA=0" # need 5.3.4
       	"USE_SYSTEM_LIB_PORTAUDIO=1"
       	"USE_SYSTEM_LIB_SQLITE3=1"
       	"USE_SYSTEM_LIB_ZLIB=1"
+        "USE_SYSTEM_LIB_PORTMIDI=1"
 
       	# Disable warnings being treated as errors and enable verbose build output
       	"NOWERROR=1"
@@ -86,9 +87,8 @@ stdenv.mkDerivation rec {
         "DEBUG=1" # ? use debug &&
         "TOOLS=1" # ? use tools &&
         "OPENMP=1" # ? use openmp &&
-        "USE_SYSTEM_LIB_PORTMIDI=1"
 
-        "QT_HOME=@qt5@/lib"
+        "QT_HOME=${qt5.full}"
         "REGENIE=1"
       ];
 
