@@ -20,7 +20,14 @@ stdenv.mkDerivation rec {
     maintainers = [ maintainers.genesis ];
   };
 
-  makeFlags = [ "DESTDIR=$(out)" "prefix=$(out)" ];
+  configurePhase =
+  ''
+    find . -name '*.sh' -exec sed -e 's@#!/bin/sh@${stdenv.shell}@' -i '{}' ';'
+    find . -name '*.sh' -exec chmod +x {} \;
+    ./build.sh -c
+  '';
+
+  makeFlags = [ "DESTDIR=$(out)" "prefix=/" ];
   nativeBuildInputs = [ unzip ];
   buildInputs = [ makeWrapper libxml2 ];
 }
