@@ -20,6 +20,7 @@ stdenv.mkDerivation rec {
     maintainers = [ maintainers.genesis ];
   };
 
+  makeFlags = [ "DESTDIR=$(out)" "prefix=$(out)" ];
   nativeBuildInputs = [ unzip ];
   buildInputs = [ makeWrapper libxml2 ];
 }

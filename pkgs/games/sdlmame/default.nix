@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, makeWrapper, pkgconfig, python3, alsaLib, qt5, qt5.full, lua,
+{ stdenv, fetchurl, makeWrapper, pkgconfig, python3, alsaLib, qt5, lua,
   SDL2, fontconfig, freetype, SDL2_ttf, sqlite, libjpeg, expat, flac, openmpi,
   portaudio, portmidi, zlib, xorg }:
 
@@ -58,37 +58,37 @@ stdenv.mkDerivation rec {
       3rdparty/genie/build/gmake.linux/genie.make
     ''; */
 
-  nativeBuildInputs = [makeWrapper python3 pkgconfig  qt56.full];
+  nativeBuildInputs = [makeWrapper python3 pkgconfig ];
   buildInputs = [ alsaLib lua qt5.qtbase SDL2 fontconfig freetype SDL2_ttf
       libjpeg expat flac openmpi portaudio portmidi zlib ];
 
   makeFlags =
-  let
-    arch = head (splitString "-" stdenv.system);
-  in [
-    /* "ARCHITECTURE=${arch}"
-    "TARGETOS=linux" */
-    "PTR64=1" # #if amd64
+      let
+        arch = head (splitString "-" stdenv.system);
+      in [
+        /* "ARCHITECTURE=${arch}"
+        "TARGETOS=linux" */
+        "PTR64=1" # #if amd64
 
-    # Disable using bundled libraries
-  	"USE_SYSTEM_LIB_EXPAT=1"
-  	"USE_SYSTEM_LIB_FLAC=1"
-  	"USE_SYSTEM_LIB_JPEG=1"
-    "USE_SYSTEM_LIB_LUA=1"
-  	"USE_SYSTEM_LIB_PORTAUDIO=1"
-  	"USE_SYSTEM_LIB_SQLITE3=1"
-  	"USE_SYSTEM_LIB_ZLIB=1"
+        # Disable using bundled libraries
+      	"USE_SYSTEM_LIB_EXPAT=1"
+      	"USE_SYSTEM_LIB_FLAC=1"
+      	"USE_SYSTEM_LIB_JPEG=1"
+        "USE_SYSTEM_LIB_LUA=1"
+      	"USE_SYSTEM_LIB_PORTAUDIO=1"
+      	"USE_SYSTEM_LIB_SQLITE3=1"
+      	"USE_SYSTEM_LIB_ZLIB=1"
 
-  	# Disable warnings being treated as errors and enable verbose build output
-  	"NOWERROR=1"
-  	"VERBOSE=1"
+      	# Disable warnings being treated as errors and enable verbose build output
+      	"NOWERROR=1"
+      	"VERBOSE=1"
 
-    "DEBUG=1" # ? use debug &&
-    "TOOLS=1" # ? use tools &&
-    "OPENMP=1" # ? use openmp &&
-    "USE_SYSTEM_LIB_PORTMIDI=1"
+        "DEBUG=1" # ? use debug &&
+        "TOOLS=1" # ? use tools &&
+        "OPENMP=1" # ? use openmp &&
+        "USE_SYSTEM_LIB_PORTMIDI=1"
 
-    "REGENIE=1"
-  ];
+        "REGENIE=1"
+      ];
 
 }
