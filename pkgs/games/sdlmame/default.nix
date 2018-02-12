@@ -88,6 +88,7 @@ stdenv.mkDerivation rec {
         "OPENMP=1" # ? use openmp &&
         "USE_SYSTEM_LIB_PORTMIDI=1"
 
+        "QT_HOME=@qt5@/lib"
         "REGENIE=1"
       ];
 
