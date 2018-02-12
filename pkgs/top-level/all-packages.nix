@@ -14009,7 +14009,7 @@ with pkgs;
 
   qgo = libsForQt5.callPackage ../games/qgo { };
 
-  qmc2 = libsForQt5.callPackage ../games/qmc2 { };
+  qmc2 = libsForQt5.callPackage ../misc/emulators/qmc2 { };
 
   quattrocento = callPackage ../data/fonts/quattrocento {};
 
@@ -16030,6 +16030,8 @@ with pkgs;
   lighthouse = callPackage ../applications/misc/lighthouse { };
 
   lighttable = callPackage ../applications/editors/lighttable {};
+
+  libdsk = callPackage ../misc/emulators/libdsk { };
 
   links2 = callPackage ../applications/networking/browsers/links2 { };
 
@@ -18653,7 +18655,7 @@ with pkgs;
 
   scrolls = callPackage ../games/scrolls { };
 
-  sdlmame = callPackage ../games/sdlmame { };
+  sdlmame = callPackage ../misc/emulators/sdlmame { };
 
   service-wrapper = callPackage ../os-specific/linux/service-wrapper { };
 
@@ -20358,6 +20360,8 @@ with pkgs;
   );
 
   zsnes = callPackage_i686 ../misc/emulators/zsnes { };
+
+  xcpc = callPackage ../misc/emulators/xcpc { };
 
   zxcvbn-c = callPackage ../development/libraries/zxcvbn-c { };
 
