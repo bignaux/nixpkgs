@@ -1,15 +1,17 @@
-{ stdenv, fetchurl, libpng, pkgconfig, SDL, freetype, zlib }:
+{ stdenv, fetchFromGitHub, libpng, pkgconfig, SDL, freetype, zlib, mesa }:
 
 with stdenv.lib;
 stdenv.mkDerivation rec {
 
   pname = "caprice32";
   name = "${pname}-${version}";
-  version = "4.4.0";
+  version = "4.4.0+git";
 
-  src = fetchurl {
-    url = "https://github.com/ColinPitrat/caprice32/archive/v${version}.tar.gz";
-    sha256 = "1y2gix3lf096f2k4dhijh08v7pg81kydwgh76wn3j4f0xk031cq0";
+  src = fetchFromGitHub {
+    owner = "ColinPitrat";
+    repo  = "caprice32";
+    rev = "53de69543300f81af85df32cbd21bb5c68cab61e";
+    sha256 = "12yv56blm49qmshpk4mgc802bs51wv2ra87hmcbf2wxma39c45fy";
   };
 
   meta = {
@@ -22,9 +24,5 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ pkgconfig ];
   buildInputs = [ libpng SDL freetype zlib ];
-  /* makeFlags = [
-      "DEBUG=TRUE"
-      "WITHOUT_GL=TRUE"
-      "ARCH=linux"
-  ]; */
+  makeFlags = [ "GIT_HASH=$(src.rev)" "DESTDIR=$(out)" "prefix=/"];
 }
