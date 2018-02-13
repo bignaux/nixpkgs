@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, libdsk, pkgconfig, glib, libXaw, libX11, libXext }:
+{ stdenv, fetchurl, libdsk, pkgconfig, glib, libXaw, libX11, libXext, lesstif }:
 
 with stdenv.lib;
 stdenv.mkDerivation rec {
@@ -20,5 +20,5 @@ stdenv.mkDerivation rec {
     platforms = platforms.linux;
   };
 
-  buildInputs = [ pkgconfig glib libdsk libXaw libX11 libXext];
+  buildInputs = [ pkgconfig glib libdsk libXaw libX11 libXext lesstif];
 }
