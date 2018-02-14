@@ -2,12 +2,10 @@
   SDL2, fontconfig, freetype, SDL2_ttf, sqlite, libjpeg, expat, flac, openmpi,
   portaudio, portmidi, zlib, mesa, xorg }:
 
-with stdenv.lib;
-
 stdenv.mkDerivation rec {
   version = "0.194";
   name    = "sdlmame-${version}";
-  mamename = "mame" + replaceStrings ["."] [""] (version);
+  mamename = "mame" + stdenv.lib.replaceStrings ["."] [""] (version);
 
   src = fetchurl {
       url    = "https://github.com/mamedev/mame/archive/${mamename}.tar.gz";
