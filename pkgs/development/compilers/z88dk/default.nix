@@ -3,7 +3,7 @@
 stdenv.mkDerivation rec {
 
   pname = "z88dk";
-  version = "20170217";
+  version = "20180217";
   rev = "49a7c6032b2675af742f5b0b3aa5bd5260bdd814";
   short_rev = "${builtins.substring 0 7 rev}";
   name = "${pname}-${version}-${short_rev}";
@@ -29,7 +29,6 @@ stdenv.mkDerivation rec {
     find . -name '*.sh' -exec chmod +x {} \;
     #./build.sh -c  # we dont rely on this NIH script :
     make clean
-    mkdir -p $(out)/bin
     export PATH="$PWD/bin:$PATH" # needed to have zcc in testsuite
     export ZCCCFG=$PWD/lib/config/
   '';
@@ -43,5 +42,8 @@ git_count = $(shell git rev-list --count HEAD) */
   nativeBuildInputs = [ makeWrapper unzip m4 ];
   buildInputs = [ libxml2 ];
 
+  preInstall = ''
+    mkdir -p $out/{bin,share}
+  '';
   #installTargets = "";
 }
