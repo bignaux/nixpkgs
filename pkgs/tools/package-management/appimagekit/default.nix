@@ -8,7 +8,7 @@ with stdenv.lib;
 stdenv.mkDerivation rec {
 
   pname = "appimagekit";
-  version = "06012017";
+  version = "20170106";
   name = "${pname}-${version}";
 
   meta = {
