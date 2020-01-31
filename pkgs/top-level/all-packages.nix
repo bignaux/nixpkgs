@@ -1424,6 +1424,8 @@ in
 
   cli-visualizer = callPackage ../applications/misc/cli-visualizer { };
 
+  clocktimer = callPackage ../applications/misc/clocktimer { };
+
   clog-cli = callPackage ../development/tools/clog-cli { };
 
   cloud-init = callPackage ../tools/virtualization/cloud-init { };
